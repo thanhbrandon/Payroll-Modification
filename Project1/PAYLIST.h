@@ -25,12 +25,24 @@ public:
 		head = nullptr;
 	}
 
-
+	// Destructor
+	~PayList();
 
 	// Linked list operations
 	void appendNode(int, double);
 	void displayList() const;
 };
+
+PayList::~PayList()
+{
+	PayNode* current = head;
+	while (current != 0) {
+		PayNode* next = current->next;
+		delete current;
+		current = next;
+	}
+	head = 0;
+}
 
 void PayList::appendNode(int newEmID, double newPayRate)
 {
@@ -85,9 +97,8 @@ void PayList::displayList() const {
 		// Move to the next node
 		nodePtr = nodePtr->next;
 	}
-
-
-
 }
+
+
 #endif
 #pragma once

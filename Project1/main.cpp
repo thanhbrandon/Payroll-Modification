@@ -5,47 +5,58 @@
 #include "PAYLIST.h"
 using namespace std;
 
-// Constant for the array size.
 
 
 // Function Prototypes
 vector<double> getEmployeeInfo(vector<int>);
+bool reRun(); // function prototype for reRun function
 
 int main()
 {
-    vector<int> emIDVec;
-    int emID;
-    cout << "Enter an employee ID number(0-999999): ";
-    cin >> emID;
-    emIDVec.push_back(emID);
 
-    char anotherOne = 'Y';
-    while (anotherOne != 'N') {
-        cout << "Do you want to enter another one? (Y/N)";
-        cin >> anotherOne;
-        if (toupper(anotherOne) == 'N') {
-            break;
+    bool programOn = true;
+    do {
+        int emID;
+        PayList empList;
+        vector<int> emIDVec;
+
+        cout << "Enter an employee ID number(0-999999): ";
+        cin >> emID; // Gets employee ID
+        emIDVec.push_back(emID);
+
+        // Asks user if they want to add another employee
+        char anotherOne = 'Y';
+        while (anotherOne != 'N') {
+            cout << "Do you want to enter another one? (Y/N)";
+            cin >> anotherOne;
+            if (toupper(anotherOne) == 'N') {
+                break;
+            }
+            else if (toupper(anotherOne) == 'Y') {
+                cout << "Enter an employee ID number(0-999999): ";
+                cin >> emID;
+                emIDVec.push_back(emID);
+            }
+            else {
+                cout << "Not a valid response!\n";
+            }
         }
-        else if (toupper(anotherOne) == 'Y') {
-            cout << "Enter an employee ID number(0-999999): ";
-            cin >> emID;
-            emIDVec.push_back(emID);
+    
+        vector<double> payList = getEmployeeInfo(emIDVec);
+
+        for (int i = 0; i < emIDVec.size(); i++) {
+            int empIDtemp = emIDVec[i];
+            double empPaytemp = payList[i];
+            empList.appendNode(empIDtemp, empPaytemp);
         }
-        else {
-            cout << "Not a valid response!\n";
-        }
-    }
-    PayList empList;
-    vector<double> payList = getEmployeeInfo(emIDVec);
 
-    for (int i = 0; i < emIDVec.size(); i++) {
-        int empIDtemp = emIDVec[i];
-        double empPaytemp = payList[i];
-        empList.appendNode(empIDtemp, empPaytemp);
-    }
+        empList.displayList();
+        programOn = reRun(); // Asks user if they want to run the program again
 
-    empList.displayList();
-
+        empList.~PayList();
+        emIDVec.~vector();
+        payList.~vector();
+    } while (programOn == true);
 
     return 0;
 }
@@ -102,3 +113,31 @@ vector<double> getEmployeeInfo(vector<int> emIDs)
     return payVec;
 }
 
+bool reRun()
+{
+    bool result; 	// true to end program, false to run again
+    char runAgain;	// prompt for re-running program
+
+    // prompt to run program again
+    cout << "\n\nWould you like to run program again (Y/N) ? ";
+    cin >> runAgain;
+
+    // validate input for Y, y, N, or n
+    while (toupper(runAgain) != 'Y' && toupper(runAgain) != 'N')
+    {
+        cout << "\n **  Invalid entry  **  Please enter 'Y' or 'N'\n\n";
+        cout << "Would you like to run program again (Y/N) ? ";
+        cin.ignore();  // clear keybard cache
+        cin >> runAgain;
+    }
+
+    if (toupper(runAgain) == 'Y')
+    {
+        result = true;
+        system("CLS"); // Clears console
+    }
+    else
+        result = false;
+
+    return result;
+}
